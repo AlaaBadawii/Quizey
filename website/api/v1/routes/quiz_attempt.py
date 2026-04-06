@@ -179,7 +179,6 @@ def submit_quiz_attempt(user_id, quiz_id, attempt_id):
     if attempt.is_submitted:
         return jsonify({"detail": "Attempt has already been submitted"}), 400
 
-    question_num_in_quiz = db.query(QuizAttempt).filter(QuizAttempt.quiz_id == quiz_id).count()
     total_score = evaluate_quiz(attempt_id)
 
     try:
@@ -190,7 +189,7 @@ def submit_quiz_attempt(user_id, quiz_id, attempt_id):
         db.rollback()
         return jsonify({"detail": "Database error occurred"}), 500
 
-    return jsonify({"message": "Quiz attempt submitted successfully", "Score": str(int(total_score/question_num_in_quiz * 100))+"%"}), 200
+    return jsonify({"message": "Quiz attempt submitted successfully", "Score": total_score}), 200
 
 @views.route('/users/<int:user_id>/quizzes/<int:quiz_id>/attempts/<int:attempt_id>/delete', methods=['DELETE'], strict_slashes=False)
 def delete_quiz_attempt(user_id, quiz_id, attempt_id):

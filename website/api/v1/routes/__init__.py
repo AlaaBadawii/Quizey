@@ -27,6 +27,6 @@ from api.v1.routes.answer import *
 from api.v1.routes.bank import *
 from api.v1.routes.question_bank import *
 from api.v1.routes.question import *
-from api.v1.routes.user import *
+from website.api.v1.routes.user import *
 from api.v1.routes.quiz_attempt import *
 from api.v1.routes.quiz import *

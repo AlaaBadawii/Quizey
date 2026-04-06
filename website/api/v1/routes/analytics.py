@@ -41,7 +41,6 @@ def evaluate_quiz_attempt(user_id, quiz_id, attempt_id):
     if not attempt:
         return jsonify({"detail": "Attempt not found"}), 404
 
-    question_num_in_quiz = db.query(QuizAttempt).filter(QuizAttempt.quiz_id == quiz_id).count()
     total_score = evaluate_quiz(attempt_id)
 
-    return jsonify({"total_score": str(int(total_score/question_num_in_quiz * 100))+"%"}), 200
+    return jsonify({"total_score": total_score}), 200

@@ -1,77 +1,168 @@
-# Quizey Website
-Welcome to the Quizey website repository! This project is designed to provide an engaging and interactive platform for quizzes.
+# Quizey
 
-## Table of Contents
+Quizey is a Flask-based quiz and exam API for teachers and students. It supports user registration and login, email verification, quiz creation, question banks, quiz attempts, answer submission, and quiz evaluation.
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [Contact](#contact)
+## What This Repository Contains
 
-## Introduction
+- A Flask application in `website/`
+- Versioned API routes under `website/api/v1/routes/`
+- SQLAlchemy models for users, quizzes, questions, attempts, answers, and question banks
+- Alembic migration files in `alembic/`
+- Endpoint reference in `endpoints_documentation.txt`
 
-Quizey is a web application that allows teachers, professors, or anyone who wants to create an exam and share it with others via a link. It aims to make learning fun and interactive. Whether you're a student looking to test your knowledge, a teacher creating exams for your class, or just someone who loves trivia, Quizey has something for you.
+## Implemented Features
 
-## Features
+- User registration, login, profile update, profile deletion
+- Email verification and password reset flows
+- Teacher and student roles
+- Quiz creation, update, deletion, publishing, and retrieval
+- Multiple quiz types: `mcq`, `mixed`, `written`
+- Multiple question types: `true_false`, `choose`, `written`
+- Question bank creation and question reuse workflow
+- Quiz attempts with submission and evaluation
+- Attempt limits and participant limits
+- Time-based quiz availability using start and end times
 
-- **Robust API**: Provides a comprehensive set of endpoints for managing quizzes and exams.
-- **Create and customize quizzes and exams**: Add your own questions and answers via API requests.
-- **Share quizzes and exams with others**: Generate shareable links for your quizzes and exams.
-- **Question Bank**: Each teacher can create their own question bank and store questions for future exams.
-- **Track performance**: Retrieve performance data through API endpoints.
-- **Secure and scalable**: Built with security and scalability in mind.
-- **Multiple question formats**: Supports multiple-choice, true/false, and short answer questions.
-- **Leaderboard**: Access leaderboard data to see rankings.
-- **Timer**: Implement timers for quizzes and exams to increase the challenge.
-- **Multiple Attempts**: Providing students with the option to take the exam multiple times as determined by the teacher.
+## Not Currently Implemented
 
+The old README mentioned a few features that do not appear to be implemented in the current codebase:
+
+- Shareable quiz links
+- Leaderboards or ranking endpoints
+- A fully built browser-facing website home page
+
+The app currently exposes API endpoints, not a complete frontend experience.
+
+## Project Structure
+
+```text
+Quizey/
+├── README.md
+├── endpoints_documentation.txt
+├── alembic/
+├── alembic.ini
+└── website/
+    ├── app.py
+    ├── config.py
+    ├── database.py
+    ├── models.py
+    ├── oauth2.py
+    ├── requirements.txt
+    ├── schema.py
+    ├── utils.py
+    ├── api/v1/routes/
+    ├── static/
+    └── templates/
+```
+
+## Requirements
+
+- Python 3.10+
+- PostgreSQL
+- A `.env` file in the project root
+- Google OAuth credentials for Gmail sending if you want registration verification and password reset emails to work
+
+## Environment Variables
+
+The application reads configuration from `.env`. These variables are required by `website/config.py`:
+
+```env
+database_hostname=
+database_port=
+database_password=
+database_name=
+database_username=
+secret_key=
+algorithm=
+access_token_expire_minutes=
+```
 
 ## Installation
 
-To get started with the Quizey website, follow these steps:
-
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/aligomaa56/Quizey.git
-    ```
-2. Navigate to the project directory:
-    ```bash
-    cd Quizey/
-    ```
 
-3. Install the dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+git clone https://github.com/aligomaa56/Quizey.git
+cd Quizey
+```
 
-4. Obtain Google OAuth 2.0 credentials:
-    1. Go to [Google Cloud Console](https://console.cloud.google.com/).
-    2. Create a new project.
-    3. Enable the Gmail API for your project.
-    4. Create OAuth 2.0 credentials and download the `credentials.json` file.
-    5. Place the `credentials.json` file in the root of your project directory(website).
-## Usage
+2. Create and activate a virtual environment:
 
-To start the development server, run:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+3. Install dependencies:
+
+```bash
+pip install -r website/requirements.txt
+```
+
+4. Create a PostgreSQL database and fill in the `.env` values.
+
+5. Run the database migrations:
+
+```bash
+alembic upgrade head
+```
+
+6. Optional: set up Gmail API credentials if you want email verification and password reset emails to work.
+
+- Create a Google Cloud project
+- Enable the Gmail API
+- Download OAuth credentials
+- Place `credentials.json` in `website/`
+
+## Running the App
+
+Start the development server with:
+
 ```bash
 python3 website/app.py
 ```
-Open your browser and navigate to `http://localhost:5000` to view the website. Alternatively, you can use Postman to test the API, which is considered the best practice.
+
+By default, Flask will run locally and expose API routes such as:
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `GET /api/v1/auth/users/<user_id>/profile`
+- `POST /api/v1/views/users/<user_id>/quizzes`
+- `POST /api/v1/views/users/<user_id>/quizzes/<quiz_id>/attempts`
+
+This project is best tested with Postman, Insomnia, or `curl`.
+
+## API Overview
+
+Main API areas:
+
+- Authentication
+- User profile
+- Quizzes
+- Questions
+- Quiz attempts
+- Answers
+- Question banks
+- Attempt evaluation
+
+For the endpoint list, see `endpoints_documentation.txt`.
+
+## Notes
+
+- Authentication uses bearer tokens.
+- Many routes require an `Authorization: Bearer <token>` header.
+- Some routes accept form data, especially authentication-related endpoints.
+- Most quiz and question management routes expect JSON payloads.
 
 ## Contributing
 
-We welcome contributions! However, please note that the project is currently under development.
+Contributions are welcome. If you plan to contribute, please:
 
-- **Report bugs**: If you find a bug, please report it.
-- **Suggest features**: If you have an idea for a new feature, let us know.
-- **Submit pull requests**: If you have a fix or a new feature, submit a pull request.
+- Report bugs with reproduction steps
+- Keep documentation aligned with code changes
+- Update migration files when schema changes are introduced
 
 ## Contact
 
-If you have any questions or feedback, please don't hesitate to reach out. You can contact us at:
-- **Alaa Badawy**: [alaa.badawy404@gmail.com](mailto:alaa.badawy404@gmail.com)
-- **Ali Gomaa**: [alielsayedgomaa@gmail.com](mailto:alielsayedgomaa@gmail.com)
-
-Thank you for visiting the Quizey website repository. We hope you enjoy using our platform!
+- Alaa Badawy: `alaa.badawy404@gmail.com`
+- Ali Gomaa: `alielsayedgomaa@gmail.com`
